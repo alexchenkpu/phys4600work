@@ -1,0 +1,7 @@
+git add --all
+
+git commit -m "some commit"
+
+git push origin master
+
+(then check if github is updated)
