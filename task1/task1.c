@@ -31,7 +31,7 @@ int main()
 		sum1 += pow((data[i]-mean),2);
 	}
 	
-	std_dev= sqrt(sum1/32);
+	std_dev= sqrt(sum1/(32-1));
 
 	/*  ==== END OF YOUR CODE ==== */
 
