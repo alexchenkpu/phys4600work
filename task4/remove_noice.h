@@ -3,6 +3,6 @@
 
 #include <stdio.h>
 
-double remove_noice(double* data, int size);
+double remove_noice(double* data, int size, int smooth);
 
 #endif

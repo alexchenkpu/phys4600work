@@ -33,6 +33,7 @@ void main(int argc, char** argv)
 		}
 		fclose(input_file);
 		amplitude = find_amplitude(data,count);
+		printf("amplitude = %f\n", amplitude);
 
 		//random(count);
 
@@ -44,18 +45,18 @@ void main(int argc, char** argv)
 			{
 				count2++;
 			}
-			double data[count2];
+			double data2[count2];
 
 			rewind(input_file);
 			for(int i=0;i<count2;i++)
 			{
-				if(fscanf(input_file,"%lf",&data[i]) == EOF) //EOF is end of the file
+				if(fscanf(input_file,"%lf",&data2[i]) == EOF) //EOF is end of the file
 				{
 					break;
 				}
 			}
 			fclose(input_file);
-			remove_noice(data, count2);
+			remove_noice(data2, count2, 5);
 		}
 		
 

@@ -26,7 +26,5 @@ double find_amplitude(double* data, int size)
 
 	amplitude = (max-min)/2;
 
-	printf("amplitude = %f\n",amplitude);
-
 	return (amplitude);
 }
