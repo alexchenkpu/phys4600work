@@ -36,6 +36,9 @@ void main(int argc, char** argv)
 	float x_axis[data_count];
 	float data[data_count];
 	
+	/* JAMES: Probably don't need to check this again here - if it had been NULL we would
+	have already exited at the last check. However it would be a good idea to check if 
+	data_count > 0 */
 
 	if(input_file != NULL) //check if the file is open
 	{	
@@ -71,7 +74,8 @@ void main(int argc, char** argv)
 	
 		std_dev= sqrt(sum1/(data_count-1));
 
-	
+		/* JAMES: You run through your data twice here, 
+		this is a bit inefficient - maybe a more efficient method? */
 
 		printf("\nMean = %f", mean);
 		printf("\nStandard deviation = %f", std_dev);

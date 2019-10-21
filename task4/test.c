@@ -5,6 +5,17 @@
 #include "random.h"
 #include "remove_noice.h"
 
+
+/*
+	JAMES: Very good. Just a couple of style points:
+		perhaps the find_amplitude and remove_noice functions could have been in the 
+		same header source file since they are somewhat related. Generally if you are
+		going to have a source file with only one function it is normal to give the header
+		file the same name as the function - it make it more obvious what the file is for 
+
+	spelling is "noise" - not "noice"
+*/
+
 void main(int argc, char** argv)
 {
 	float x;
