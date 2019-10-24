@@ -21,14 +21,14 @@ void main(int argc, char** argv)
 	int lsb;
 	int msb;
 
-	status = viOpenDefaultRM(&defaultRM);
+	status = viOpenDefaultRM(&defaultRM); //open defaultRM
 
 	if(status == VI_SUCCESS)
 	{
-		status = viFindRsrc(defaultRM,"USB[0-9]::?*INSTR",	&resourceList,&num_inst,description);
+		status = viFindRsrc(defaultRM,"USB[0-9]::?*INSTR",	&resourceList,&num_inst,description); //find instrument
 		if(status == VI_SUCCESS)
 		{
-			status = viOpen(defaultRM,description,	VI_NULL,VI_NULL,&scopeHandle);
+			status = viOpen(defaultRM,description,	VI_NULL,VI_NULL,&scopeHandle); //open specific instrument
 
 			if(status == VI_SUCCESS)
 			{
@@ -46,7 +46,7 @@ void main(int argc, char** argv)
 				viRead(scopeHandle,division,256,&resultCount);
 				sscanf(division,"%f",&voltscale);
 				printf("\nscale = %fV\n",voltscale);
-				conversion = voltscale*8/256;
+				conversion = voltscale*10/256; //convert from devision to volt
 
 				viWrite(scopeHandle,"CURV?\n",6,&resultCount);
 				viRead(scopeHandle,dataBuffer,2500,&resultCount);
