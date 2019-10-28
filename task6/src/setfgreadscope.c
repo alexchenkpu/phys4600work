@@ -8,7 +8,7 @@
 
 #define DATA_LENGTH 2500
 
-void setfgreadscope(ViSession funcHandle,ViSession scopeHandle)
+void setfgreadscope(ViSession funcHandle,ViSession scopeHandle,double* amplitude,double* frequency,int* datacount)
 {
 	ViStatus status = VI_SUCCESS;
 	ViUInt32 num_inst;
@@ -17,10 +17,10 @@ void setfgreadscope(ViSession funcHandle,ViSession scopeHandle)
 	char command[36], dataBuffer[DATA_LENGTH];
 	unsigned char division[30];
 	float voltscale, conversion;
-	double data[DATA_LENGTH], amplitude[DATA_LENGTH];
+	double data[DATA_LENGTH];//, amplitudef[DATA_LENGTH], frequencyf[DATA_LENGTH];
 	int startfrequceny = 10;
 	int endfrequency = 100;
-	int step = 10;
+	int step = 10,run=0;
 
 	//viWrite(funcHandle,":SOUR1:FUNC SIN\n",16,&resultCount); //set the waveform type
 	viWrite(scopeHandle,"DAT:SOU CH1\n",12,&resultCount); //read oscilloscope from ch1
@@ -32,7 +32,8 @@ void setfgreadscope(ViSession funcHandle,ViSession scopeHandle)
 		viWrite(funcHandle,command,strlen(command),&resultCount); //set the frequency
 		viWrite(funcHandle,":OUTP1 ON\n",9,&resultCount);
 
-		viWrite(scopeHandle,"AUTOS\n",6,&resultCount); //autoscale
+		viWrite(scopeHandle,"AUTOS EXEC\n",11,&resultCount); //autoscale
+		sleep(3);
 
 		viWrite(scopeHandle,"CH1:SCA?\n",9,&resultCount);
 		viRead(scopeHandle,division,256,&resultCount); //read osilloscope scale
@@ -47,8 +48,10 @@ void setfgreadscope(ViSession funcHandle,ViSession scopeHandle)
 			data[j]=dataBuffer[j]*conversion;
 			//printf("\nfrequency=%d, volt = %f",i,data[j]);
 		}
-
-		amplitude[i] = find_amplitude(data, DATA_LENGTH);
-		printf("frequency=%d, amplitude = %f",i,amplitude[i]);
+		frequency[run]=i;
+		amplitude[run] = find_amplitude(data, DATA_LENGTH);
+		*datacount = ((endfrequency-startfrequceny)/step)+1;
+		printf("frequency=%lf, amplitude = %lf",frequency[run],amplitude[run]);
+		run++;
 	}
 }

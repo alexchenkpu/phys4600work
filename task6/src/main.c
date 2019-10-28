@@ -3,6 +3,9 @@
 #include <math.h>	
 #include <visa.h>
 #include "setfgreadscope.h"
+#include "openscope.h"
+#include "openfuncg.h"
+#include "outputdata.h"
 
 void main(int argc, char** argv)
 {
@@ -14,49 +17,19 @@ void main(int argc, char** argv)
 	ViChar description[VI_FIND_BUFLEN];
 	char dataBuffer[2500];
 	unsigned char resultBuffer[256];
+	double amplitude[2500], frequency[2500];
+	int datacount;
 
-	status = viOpenDefaultRM(&defaultRM);
+	status = viOpenDefaultRM(&defaultRM); //start the VISA interface
 	if(status == VI_SUCCESS)
 	{
-		status = viFindRsrc(defaultRM,"USB[0-9]::0x0699?*INSTR",	&resourceList,&num_inst,description); //find instrument that has 0x0699(tektronix)
-		
-		if(status == VI_SUCCESS)
-		{
-			status = viOpen(defaultRM,description,	VI_NULL,VI_NULL,&scopeHandle); //open oscilloscope
+		openscope(defaultRM, &scopeHandle);
 
-			if(status == VI_SUCCESS)
-			{
-				printf("\nOpened %s\n",description);
+		openfuncg(defaultRM, &funcHandle);
 
-				viWrite(scopeHandle,"*IDN?\n",6,&resultCount);
-				viRead(scopeHandle,resultBuffer,256,&resultCount);
+		setfgreadscope(funcHandle,scopeHandle,amplitude,frequency,&datacount);
 
-				printf("\nOscilloscope = %s\n",resultBuffer );
-			}
-			else printf("Couldn't open oscilloscope\n");
-		}
-		else {printf("Couldn't fnd oscilloscope\n"); exit(EXIT_FAILURE);}
-
-		status = viFindRsrc(defaultRM,"USB[0-9]::0x1AB1?*INSTR", &resourceList,&num_inst,description); //find instrument that has 0x1AB1(rigol)
-		if(status == VI_SUCCESS)
-		{
-			status = viOpen(defaultRM,description,	VI_NULL,VI_NULL,&funcHandle); //open function generator
-
-			if(status == VI_SUCCESS)
-			{
-				printf("\nOpened %s\n",description);
-
-				viWrite(funcHandle,"*IDN?\n",6,&resultCount);
-				viRead(funcHandle,resultBuffer,256,&resultCount);
-
-				printf("\nFunctionGen = %s\n",resultBuffer );
-			}
-			else printf("Couldn't open function generator\n");
-		}
-		else {printf("Couldn't find function generator\n"); exit(EXIT_FAILURE);}
-
-		setfgreadscope(funcHandle,scopeHandle);
-
+		outputdata(amplitude, frequency, datacount);
 	}
 	else {printf("Failed to open defaultRM\n"); exit(EXIT_FAILURE);}
 }
