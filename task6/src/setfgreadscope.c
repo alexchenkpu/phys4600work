@@ -5,10 +5,12 @@
 #include <string.h>
 #include "setfgreadscope.h"
 #include "curve.h"
+#include "remove_noice.h"
+#include "inputdata.h"
 
 #define DATA_LENGTH 2500
 
-void setfgreadscope(ViSession funcHandle,ViSession scopeHandle,double* amplitude,double* frequency,int* datacount)
+void setfgreadscope(ViSession funcHandle,ViSession scopeHandle,double* amplitude,double* frequency,int* datacount,char* filename)
 {
 	ViStatus status = VI_SUCCESS;
 	ViUInt32 num_inst;
@@ -17,13 +19,15 @@ void setfgreadscope(ViSession funcHandle,ViSession scopeHandle,double* amplitude
 	char command[36], dataBuffer[DATA_LENGTH];
 	unsigned char division[30];
 	float voltscale, conversion;
-	double data[DATA_LENGTH];//, amplitudef[DATA_LENGTH], frequencyf[DATA_LENGTH];
-	int startfrequceny = 10;
-	int endfrequency = 100;
-	int step = 10,run=0;
+	double data[DATA_LENGTH], smoothData[DATA_LENGTH];
+	int startfrequceny, endfrequency;
+	int step = 1000,run=0;
 
-	//viWrite(funcHandle,":SOUR1:FUNC SIN\n",16,&resultCount); //set the waveform type
-	viWrite(scopeHandle,"DAT:SOU CH1\n",12,&resultCount); //read oscilloscope from ch1
+	inputdata(&startfrequceny,&endfrequency,filename);
+
+	printf("start=%d end=%d",startfrequceny,endfrequency);
+
+	viWrite(scopeHandle,"DAT:SOU CH1\n",12,&resultCount); //set to read oscilloscope from ch1
 
 	for(int i=startfrequceny;i<=endfrequency;i+=step)
 	{
@@ -48,8 +52,10 @@ void setfgreadscope(ViSession funcHandle,ViSession scopeHandle,double* amplitude
 			data[j]=dataBuffer[j]*conversion;
 			//printf("\nfrequency=%d, volt = %f",i,data[j]);
 		}
+		remove_noice(data, DATA_LENGTH, 5, smoothData);
+
 		frequency[run]=i;
-		amplitude[run] = find_amplitude(data, DATA_LENGTH);
+		amplitude[run] = find_amplitude(smoothData, DATA_LENGTH);
 		*datacount = ((endfrequency-startfrequceny)/step)+1;
 		printf("frequency=%lf, amplitude = %lf",frequency[run],amplitude[run]);
 		run++;

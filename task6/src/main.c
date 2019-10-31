@@ -16,7 +16,7 @@ void main(int argc, char** argv)
 	ViUInt32 resultCount;
 	ViChar description[VI_FIND_BUFLEN];
 	char dataBuffer[2500];
-	unsigned char resultBuffer[256];
+	unsigned char resultBuffer[256], filename[30];
 	double amplitude[2500], frequency[2500];
 	int datacount;
 
@@ -27,7 +27,7 @@ void main(int argc, char** argv)
 
 		openfuncg(defaultRM, &funcHandle);
 
-		setfgreadscope(funcHandle,scopeHandle,amplitude,frequency,&datacount);
+		setfgreadscope(funcHandle,scopeHandle,amplitude,frequency,&datacount,filename);
 
 		outputdata(amplitude, frequency, datacount);
 	}

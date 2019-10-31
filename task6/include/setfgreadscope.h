@@ -6,6 +6,6 @@
 #include <math.h>
 #include <visa.h>
 
-void setfgreadscope(ViSession funcHandle,ViSession scopeHandle,double* amplitude,double* frequency,int* datacount);
+void setfgreadscope(ViSession funcHandle,ViSession scopeHandle,double* amplitude,double* frequency,int* datacount, char* filename);
 
 #endif

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "outputdata.h"
 
 void outputdata(double* amplitude, double* frequency, int datacount)
 {
@@ -12,7 +13,9 @@ void outputdata(double* amplitude, double* frequency, int datacount)
 	{
 		for(int i=0;i<datacount;i++)
 		{
-			fprintf(input_file, "%lf %lf\n",frequency[i],amplitude[i]);
+			//fprintf(input_file, "%lf %lf\n",frequency[i],amplitude[i]);
+			fprintf(input_file, "%lf\n",frequency[i]);
+			fprintf(input_file, "%lf\n",amplitude[i]);
 		}
 	}
 	fclose(input_file); //close input_file
